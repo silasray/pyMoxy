@@ -6,6 +6,7 @@ Current version has an example impelementation for the Amazon In App Purchase Re
 
 Endpoints:
 -   [host]/moxy/[method_key]/value_replacement/
+
         {"triggered_by" : ("REQUEST"/"RESPONSE"),
          "applied_to" : ("REQUEST"/"RESPONSE"),
          "conditions" : {"condition_name_0" : condition_value_0,
@@ -15,6 +16,7 @@ Endpoints:
                            "replacement_name_1" : replacement_value_1,
                            "replacement_name_n" : replacement_value_n}}
 -   [host]/moxy/[method_key]/canned_response/
+
         {"conditions" : {"condition_name_0" : condition_value_0,
                          "condition_name_1" : condition_value_1,
                          "condition_name_n" : condition_value_n},
