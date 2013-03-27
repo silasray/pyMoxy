@@ -54,7 +54,7 @@ class Mock(object):
         if data.original_response is None:
             data.original_response = self._proxy(data.original_request if data.working_request is None else data.working_request)
         for rule in method_rules.filter(applied_during=TRANSACTION_STAGES.RESPONSE):
-            data = TransactionData(rule.apply(*data))
+            data = TransactionData(rule.apply_to(*data))
         return data.original_response if data.working_response is None else data.working_response
 
 
