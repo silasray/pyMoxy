@@ -110,4 +110,11 @@ class JsonProxy(CallProxy):
     
     def _parse_response(self, headers, body):
         
-        return {'headers' : headers, 'body' : json.loads(body)}
+        try:
+            parsed_body = json.loads(body)
+        except ValueError:
+            if body:
+                parsed_body = body
+            else:
+                parsed_body = ''
+        return {'headers' : headers, 'body' : parsed_body}
