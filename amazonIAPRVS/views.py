@@ -20,7 +20,9 @@ class IAPRVSResource(View):
                                       'developer_key' : developer_key,
                                       'user_id' : user_id,
                                       'purchase_token' : purchase_token})
-        response = HttpResponse(json.dumps(response_data['body']), status=response_data['headers'].pop('status'))
+        serialized_body = json.dumps(response_data['body'], separators=(',', ':'))
+        response = HttpResponse(serialized_body, status=response_data['headers'].pop('status'))
+        response_data['headers']['CONTENT-LENGTH'] = len(serialized_body)
         for name, value in response_data['headers'].iteritems():
             response[name] = value
         return response

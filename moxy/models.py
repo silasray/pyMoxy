@@ -18,7 +18,8 @@ __VALUE_TYPES = (('UNKNOWN', lambda value: None, NoneType),
                  ('STRING', lambda value: None if value is None else value, basestring),
                  ('BOOL', lambda value: None if value is None else value == 'True', bool),
                  ('INT', lambda value: None if value is None else int(value), int),
-                 ('FLOAT', lambda value: None if value is None else float(value), float))
+                 ('FLOAT', lambda value: None if value is None else float(value), float),
+                 ('LONG', lambda value: None if value is None else long(value), long))
 VALUE_TYPES = __Tuple(value_type[0] for value_type in __VALUE_TYPES)
 COERCE_VALUE = __Tuple(value_type[1] for value_type in __VALUE_TYPES)
 VALUE_TYPE_MAP = {mapping[1] : mapping[0] for mapping in enumerate(value_type[2] for value_type in __VALUE_TYPES)}
