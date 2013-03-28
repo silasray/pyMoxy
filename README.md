@@ -50,6 +50,16 @@ The live Amazon RVS will respond with a valid ENTITLED type product to a GET on:
     ZLNr92laKjtTMTlz9tQyYUXl-vuEsdl1Hr8g0xxsQIa8JP3uIqNfmatmSRnOamsrYWGlpKFTrKb0IWXPlYlXhY4EH0ufJYuWzoOicNXCm6BBH9se
     KczkQ_I-QObpjCuHnlZk4pXgl3g_VggJZGpWBtuvYAqOVXYfcMjf268BaMjVX7plTQ_MPvzLrRNGQ==:qsy5n5MMZM4u-LlDrqGp5Q==
 
+Returning:
+
+    {"endDate":null,
+     "itemType":"ENTITLED",
+     "purchaseToken":"2:FlrXSsmgOBKXoBbf6BtIrBtmb%20%20%20%20%20ZLNr92laKjtTMTlz9tQyYUXl-vuEsdl1Hr8g0xxsQIa8JP3uIqNfm
+     atmSRnOamsrYWGlpKFTrKb0IWXPlYlXhY4EH0ufJYuWzoOicNXCm6BBH9se%20%20%20%20%20KczkQ_I-QObpjCuHnlZk4pXgl3g_VggJZGpWBt
+     uvYAqOVXYfcMjf268BaMjVX7plTQ_MPvzLrRNGQ==:qsy5n5MMZM4u-LlDrqGp5Q==",
+     "sku":"com.amazon.android.comics.OCT110363",
+     "startDate":null}
+
 However, this is ungainly, and the test data can't be used to generate a CONSUMABLE type.  Let's make this better.  
 If we submit the following requests to the moxy, we'll be able to compose a more consise call, and also have whatever 
 piece of product code that is running through the moxy be able to recieve a CONSUMABLE type without having to do any 
@@ -105,3 +115,11 @@ matching purchase_token values when the action is verify.  This keeps us from ma
 our previous call to RVS becomes:
 
     [moxy host]/version/2.0/verify/developer/live_test/user/live_test/purchaseToken/live_test_entitlement_as_consumable
+
+Returning:
+
+    {"sku": "com.amazon.android.comics.consumableHero",
+     "startDate": null,
+     "endDate": null,
+     "itemType": "CONSUMABLE",
+     "purchaseToken": "live_test_entitlement_as_consumable"}
