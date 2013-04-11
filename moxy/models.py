@@ -2,6 +2,7 @@ from django.db import models
 import copy
 import json
 from types import NoneType
+import time
 
 class __Tuple(tuple):
     
@@ -37,7 +38,8 @@ class RuleModel(models.Model):
     applied_to = models.SmallIntegerField(choices=enumerate(TRANSACTION_STAGES))
     
     def apply_to(self, original_request, working_request=None,
-                 original_response=None, working_response=None):
+                 original_response=None, working_response=None,
+                 start_time=0):
         
         transaction_stage = TRANSACTION_STAGES.REQUEST if original_response is None else TRANSACTION_STAGES.RESPONSE
         if self.applied_during == transaction_stage:
@@ -60,6 +62,8 @@ class RuleModel(models.Model):
                             working_response = copy.deepcopy(original_response)
                         for replacement_model in self.replacementvaluemodel_set.all():
                             replacement_model.apply(working_response)
+                        for delay in self.delayresponsemodel_set.all():
+                            delay.wait_for(start_time)
         return [original_request, working_request, original_response, working_response]
 
 
@@ -171,3 +175,13 @@ class CannedResponseModel(RuleAttributeModel, RuleReplacementModel):
         return cls(message_format=getattr(MESSAGE_FORMATS, data['message_format']),
                    headers=data['headers'],
                    body=data['body'])
+
+
+class DelayResponseModel(RuleAttributeModel):
+    
+    delay = models.FloatField()
+    
+    def wait_for(self, start_time, poll_rate=.1):
+        
+        while time.time() < start_time + self.delay:
+            time.sleep(poll_rate)

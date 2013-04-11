@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 from string import Template
 import json
 from moxy.models import RuleModel, TRANSACTION_STAGES
+import time
 
 
 class TransactionData(list):
@@ -47,6 +48,7 @@ class Mock(object):
     
     def process(self, request_data):
         
+        start_time = time.time()
         data = TransactionData(request_data)
         method_rules = RuleModel.objects.filter(method_key=self._method_key)
         for rule in method_rules.filter(applied_during=TRANSACTION_STAGES.REQUEST):
@@ -54,7 +56,7 @@ class Mock(object):
         if data.original_response is None:
             data.original_response = self._proxy(data.original_request if data.working_request is None else data.working_request)
         for rule in method_rules.filter(applied_during=TRANSACTION_STAGES.RESPONSE):
-            data = TransactionData(rule.apply_to(*data))
+            data = TransactionData(rule.apply_to(*data + [start_time]))
         return data.original_response if data.working_response is None else data.working_response
 
 

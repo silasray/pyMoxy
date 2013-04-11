@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from moxy.views import ValueReplacementRuleResource, CannedResponseRuleResource
+from moxy.views import ValueReplacementRuleResource, CannedResponseRuleResource, DelayResponseRuleResource
 from amazonIAPRVS.views import IAPRVSResource
 
 # Uncomment the next two lines to enable the admin:
@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^moxy/(?P<method_key>.+)/value_replacement/$', ValueReplacementRuleResource.as_view()),
     url(r'^moxy/(?P<method_key>.+)/canned_response/$', CannedResponseRuleResource.as_view()),
+    url(r'^moxy/(?P<method_key>.+)/delay_response/$', DelayResponseRuleResource.as_view()),
     url(r'^version/2.0/(?P<action>.+)/developer/(?P<developer_key>.+)'
         r'/user/(?P<user_id>.+)/purchaseToken/(?P<purchase_token>.+)$',
         IAPRVSResource.as_view())
