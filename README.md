@@ -1,8 +1,9 @@
 pyMoxy
 ======
 Tool, intended for use in test environments, for mocking/proxying REST services that provides a RESTful interface 
-(as well as a web app interface, not yet implemented) for managing value replacment and canned response rules.  
-Current version has an example impelementation for the Amazon In App Purchase Receipt Verification Service API.
+(as well as a web app interface, not yet implemented) for managing value replacment, canned response, and delayed 
+response rules.  Current version has an example impelementation for the Amazon In App Purchase Receipt Verification 
+Service API.
 
 Endpoints:
 -   [host]/moxy/[method_key]/value_replacement/
@@ -25,15 +26,25 @@ Endpoints:
                            "header_name_n" : header_value_n}
          "message_format" : "JSON",
          "body" : {(arbitrary JSON data)}
+-   [host]/moxy/[method_key]/delay_response/
+        {"triggered_by" : ("REQUEST"/"RESPONSE"),
+         (optional, defaults to RESPONSE)"(applied_to/applied_during)" : ("REQUEST"/"RESPONSE"),
+         "conditions" : {"condition_name_0" : condition_value_0,
+                         "condition_name_1" : condition_value_1,
+                         "condition_name_n" : condition_value_n},
+         "delay" : (floating point value for seconds to delay)}
 -   [host]/[Amazon IAP RVS URI]
         See Amazon docs for RVS API
 
 All value replacement rules have an applied_during value equal to the applied_to value provided at creation.  Canned 
-response rules have triggered_by and applied_during set to REQUEST and applied_to set to RESPONSE automatically.  Rules 
-are unique on the combination of triggered_by, applied_durung, applied_to, conditions, and method_key.
+response rules have triggered_by and applied_during set to REQUEST and applied_to set to RESPONSE automatically.  For 
+delays, in the case that multiple delays are set for the same conditions, the effective delay will be the longest 
+delay for each stage (REQUEST/RESPONSE), with RESPONSE delays overlapping REQUEST delays (if there is a REQUEST delay 
+of 3 seconds and a RESPONSE delay of 5 seconds, the request will be delayed 3 seconds, then the response and additional 
+2).  Rules are unique on the combination of triggered_by, applied_durung, applied_to, conditions, and method_key.
 
-PUT/POST will create a new rule if none exists, otherwise they will add all replacements in the request to the existing 
-rule.  200 on success, 500 if any error.
+PUT/POST will create a new rule if none exists, otherwise they will add all replacements or delays in the request to 
+the existing rule.  200 on success, 500 if any error.
 DELETE will delete an existing rule.  Everything other than the uniqueness constraints in the request is ignored.  200 
 on success, 404 if no matching rule was found, 500 if any other error.
 
