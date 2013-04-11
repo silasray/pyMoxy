@@ -27,6 +27,7 @@ Endpoints:
          "message_format" : "JSON",
          "body" : {(arbitrary JSON data)}
 -   [host]/moxy/[method_key]/delay_response/
+
         {"triggered_by" : ("REQUEST"/"RESPONSE"),
          (optional, defaults to RESPONSE)"(applied_to/applied_during)" : ("REQUEST"/"RESPONSE"),
          "conditions" : {"condition_name_0" : condition_value_0,
