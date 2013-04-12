@@ -159,3 +159,35 @@ class DelayResponseRuleResource(View):
         else:
             rule.delete()
             return HttpResponse()
+
+
+class RuleQueryResource(View):
+    
+    def post(self, request):
+        
+        query_data = json.loads(request.body)
+        conditions_dict = query_data.pop("conditions", {})
+        if conditions_dict:
+            query_data['ruleconditionmodel__name__in'] = conditions_dict.keys()
+        matching_rules = []
+        for rule in RuleModel.objects.filter(**query_data).distinct():
+            rule_dict = {'conditions' : {}}
+            for condition in rule.ruleconditionmodel_set.all():
+                if condition.name in conditions_dict.keys() and conditions_dict[condition.name] != condition.value:
+                    break
+                rule_dict['conditions'][condition.name] = condition.value
+            else:
+                rule_dict['method_key'] = rule.method_key
+                rule_dict['triggered_by'] = rule.get_triggered_by_display()
+                rule_dict['applied_to'] = rule.get_applied_to_display()
+                rule_dict['applied_during'] = rule.get_applied_during_display()
+                if rule.replacementvaluemodel_set.count():
+                    rule_dict['replacements'] = {}
+                    for replacement in rule.replacementvaluemodel_set.all():
+                        rule_dict['replacements'][replacement.name] = replacement.value
+                if rule.cannedresponsemodel_set.count():
+                    rule_dict['canned_responses'] = [canned_response.as_dict() for canned_response in rule.cannedresponsemodel_set.all()]
+                if rule.delayresponsemodel_set.count():
+                    rule_dict['delays'] = [delay.delay for delay in rule.delayresponsemodel_set.all()]
+                matching_rules.append(rule_dict)
+        return HttpResponse(json.dumps(matching_rules))

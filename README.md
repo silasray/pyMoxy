@@ -34,6 +34,10 @@ Endpoints:
                          "condition_name_1" : condition_value_1,
                          "condition_name_n" : condition_value_n},
          "delay" : (floating point value for seconds to delay)}
+-   [host]/moxy/query_rules/
+
+        POST only, JSON body, by default will return all rules in system.  Can provide filters in the body to 
+        restrict the results.
 -   [host]/[Amazon IAP RVS URI]
         See Amazon docs for RVS API
 
