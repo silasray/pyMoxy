@@ -162,7 +162,7 @@ class CannedResponseModel(RuleAttributeModel, RuleReplacementModel):
     @headers.setter
     def headers(self, value):
         
-        self._headers = json.dumps(value)
+        self._headers = json.dumps({k.lower() : v for k, v in value.iteritems()})
     
     def as_dict(self):
         
