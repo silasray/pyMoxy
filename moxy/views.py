@@ -190,4 +190,6 @@ class RuleQueryResource(View):
                 if rule.delayresponsemodel_set.count():
                     rule_dict['delays'] = [delay.delay for delay in rule.delayresponsemodel_set.all()]
                 matching_rules.append(rule_dict)
-        return HttpResponse(json.dumps(matching_rules))
+        response = HttpResponse(json.dumps(matching_rules))
+        response['Content-Type'] = 'application/json'
+        return response
